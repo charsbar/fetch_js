@@ -1,0 +1,17 @@
+Changes
+fetch_js
+lib/FetchJS.pm
+lib/FetchJS/Flipsnap.pm
+lib/FetchJS/Highcharts.pm
+lib/FetchJS/Jquery.pm
+lib/FetchJS/Pjax.pm
+lib/FetchJS/Tablesorter.pm
+lib/FetchJS/Tinymce.pm
+lib/FetchJS/Zepto.pm
+lib/FetchJS/Zoey.pm
+Makefile.PL
+MANIFEST			This list of files
+README
+t/00_load.t
+t/99_pod.t
+t/99_podcoverage.t

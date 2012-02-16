@@ -1,0 +1,41 @@
+#!perl
+use strict;
+use warnings;
+use FindBin;
+use lib "$FindBin::Bin/lib";
+
+FetchJS::Runner->run('FetchJS');
+
+package FetchJS::Runner;
+use base 'CLI::Dispatch';
+
+sub convert_command {
+  my $cmd = shift->SUPER::convert_command(@_);
+  my %aliases = (
+    JqueryUi => 'JqueryUI',
+  );
+  return $aliases{$cmd} || $cmd;
+}
+
+__END__
+
+=head1 NAME
+
+fetch_js - fetch js (and other static files used in web apps)
+
+=head1 SYNOPSIS
+
+  fetch_js <jquery|highcharts|...> [--dir=...] [--tmpdir=...] [--minify]
+
+=head1 AUTHOR
+
+Kenichi Ishigaki, E<lt>ishigaki@cpan.orgE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2012 by Kenichi Ishigaki.
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+=cut
