@@ -16,3 +16,4 @@
 ^nytprof/
 nytprof.out
 (^|/)MYMETA.*
+public/
