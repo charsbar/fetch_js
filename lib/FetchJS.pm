@@ -207,34 +207,8 @@ sub unzip {
   require Archive::Zip;
   my $zip = Archive::Zip->new($zipball->path) or return;
 
-  my @rules;
-  for (@wants) {
-    if (ref $_ eq ref []) {
-      if (ref $_->[0] eq ref qr//) {
-        push @rules, [$_->[0], $_->[1]];
-      }
-      else {
-        push @rules, [qr/^$_->[0]$/, $_->[1]];
-      }
-    }
-    else {
-      if (ref $_ eq ref qr//) {
-        push @rules, [$_ => 'js'];
-      }
-      else {
-        push @rules, [qr/^$_$/ => 'js'];
-      }
-    }
-  }
-
-  my $root;
-  for my $member ($zip->members) {
-    $root ||= $member->fileName;
-    unless ($member->fileName =~ m/^$root/) {
-      $root = '';
-      last;
-    }
-  }
+  my @rules = _rules(@wants);
+  my $root  = _root(map { $_->fileName} $zip->members);
 
   for my $member ($zip->members) {
     my $name = $member->fileName;
@@ -255,6 +229,76 @@ sub unzip {
     }
   }
   $zipball->remove unless $self->{debug};
+}
+
+sub untar {
+  my ($self, $tarball, @wants) = @_;
+
+  require Archive::Tar;
+  my $tar = Archive::Tar->new($tarball->path) or return;
+
+  my @rules = _rules(@wants);
+  my $root  = _root($tar->list_files);
+
+  for my $name ($tar->list_files) {
+    my $path = $name;
+    $self->log(debug => $name);
+    $path =~ s/^$root// if $root;
+    my $rule;
+    if (!@wants or $rule = first {$path =~ /$_->[0]/} @rules) {
+      $self->log(info => "extracted $name");
+      my $dest = $rule ? $rule->[1] : "";
+      if (ref $dest eq ref sub {}) {
+        $dest->($path);
+        $dest = "";
+      }
+      my $file = $self->_file($dest, $path);
+      $tar->extract_file($name, $file->path);
+
+      _minify($file) if $self->{minify};
+    }
+  }
+  $tarball->remove unless $self->{debug};
+}
+
+sub _rules {
+  my @wants = @_;
+
+  my @rules;
+  for (@wants) {
+    if (ref $_ eq ref []) {
+      if (ref $_->[0] eq ref qr//) {
+        push @rules, [$_->[0], $_->[1]];
+      }
+      else {
+        push @rules, [qr/^$_->[0]$/, $_->[1]];
+      }
+    }
+    else {
+      if (ref $_ eq ref qr//) {
+        push @rules, [$_ => 'js'];
+      }
+      else {
+        push @rules, [qr/^$_$/ => 'js'];
+      }
+    }
+  }
+  @rules;
+}
+
+sub _root {
+  my $root = '';
+  for my $name (@_) {
+    unless ($root) {
+      ($root) = $name =~ m{([^/]+/)};
+      last unless $root;
+    }
+    unless ($name =~ m/^$root/) {
+      $root = '';
+      last;
+    }
+  }
+  $root;
 }
 
 sub _minify {
