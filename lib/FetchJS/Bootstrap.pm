@@ -7,7 +7,9 @@ use base 'FetchJS';
 sub _run {
   my ($self, $version) = @_;
 
-  my $uri = "http://twitter.github.com/bootstrap/assets/bootstrap.zip";
+  my $uri = $version
+    ? "http://github.com/twitter/bootstrap/zipball/v$version"
+    : "http://twitter.github.com/bootstrap/assets/bootstrap.zip";
   my $zipball = $self->fetch($uri => "bootstrap.zip");
   $self->unzip($zipball,
     [qr/\.(js|png|css)$/ => ''],
