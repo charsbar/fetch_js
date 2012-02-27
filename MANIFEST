@@ -4,8 +4,10 @@ lib/FetchJS.pm
 lib/FetchJS/Bootstrap.pm
 lib/FetchJS/Flipsnap.pm
 lib/FetchJS/Highcharts.pm
+lib/FetchJS/Html5.pm
 lib/FetchJS/Jquery.pm
 lib/FetchJS/Pjax.pm
+lib/FetchJS/Prettify.pm
 lib/FetchJS/Tablesorter.pm
 lib/FetchJS/Tinymce.pm
 lib/FetchJS/Zepto.pm
