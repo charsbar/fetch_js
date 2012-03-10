@@ -19,7 +19,6 @@ my %params = (
     'File::Which'              => 0,
     'Furl'                     => 0,
     'HTTP::Date'               => 0,
-    'IO::Compress'             => 0,
     'JavaScript::Minifier::XS' => 0,
     'List::Util'               => 0,
     'LWP::Protocol::https'     => 0,
