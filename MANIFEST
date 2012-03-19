@@ -2,6 +2,7 @@ Changes
 fetch_js
 lib/FetchJS.pm
 lib/FetchJS/Bootstrap.pm
+lib/FetchJS/Dygraphs.pm
 lib/FetchJS/Flipsnap.pm
 lib/FetchJS/Highcharts.pm
 lib/FetchJS/Html5.pm
