@@ -19,6 +19,7 @@ sub _prepare {
   my $self = shift;
   if ($self->{debug}) {
     $self->{tmpdir} ||= '.';
+    $self->{verbose} = 1;
   }
 
   $self->{_rootdir} = _find_root($self->{dir});
