@@ -217,7 +217,11 @@ sub unzip {
   my ($self, $zipball, @wants) = @_;
 
   require Archive::Zip;
-  my $zip = Archive::Zip->new($zipball->path) or return;
+  my $zip = Archive::Zip->new($zipball->path);
+  unless ($zip) {
+    $zipball->remove;
+    return;
+  }
 
   my @rules = _rules(@wants);
   my $root  = _root(map { $_->fileName} $zip->members);
