@@ -4,3 +4,6 @@ blib/
 Makefile
 Makefile.old
 *.bak
+*.gz
+*.zip
+public/

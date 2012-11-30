@@ -11,6 +11,8 @@
 \.old$
 \.bak$
 \.SKIP$
+\.zip$
+\.gz$
 (^|/)pm_to_blib
 ^cover_db/
 ^nytprof/
