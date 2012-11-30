@@ -30,6 +30,8 @@ sub _run {
   $self->unzip($langfile, [qr/\.js$/ => sub { $_[0] =~ s{^tinymce_language_pack/}{js/tiny_mce/} } ]);
 }
 
+sub _list { shift->_github_list("/tinymce/tinymce") }
+
 1;
 
 __END__

@@ -6,14 +6,25 @@ use File::Spec;
 use Path::Extended;
 use File::HomeDir;
 use List::Util qw/first/;
+use Web::Scraper;
 use base 'CLI::Dispatch::Command';
 
 our $VERSION = '0.01';
 
-sub options {qw/dir=s tmpdir=s minify|min debug/, shift->_options}
+sub options {qw/dir=s tmpdir=s minify|min debug list/, shift->_options}
 sub _options {return ()}
 
-sub run { shift->_prepare->_run(@_) }
+sub run {
+  my $self = shift;
+  if ($self->{list}) {
+    $self->_prepare->_list(@_);
+  }
+  else {
+    $self->_prepare->_run(@_);
+  }
+}
+
+sub _list { die "this command doesn't support --list yet.\n" }
 
 sub _prepare {
   my $self = shift;
@@ -322,6 +333,43 @@ sub _minify {
     $name =~ s/\.css$/.min.css/;
   }
   $file->parent->file($name)->save($minified);
+}
+
+sub _github_list {
+  my ($self, $uri, @args) = @_;
+
+  if ($uri !~ /^http/) {
+    $uri =~ s!^/!!;
+    $uri =~ s!/$!!;
+    $uri = "https://github.com/$uri";
+    $uri = "$uri/tags" unless $uri =~ m!/tags$!;
+  }
+  my $file = $self->fetch_furl($uri, @args) or die "Can't get list\n";
+
+  my $scraper = scraper {
+    process 'li.ctype-tag' => 'items[]' => scraper {
+      process 'h4 a:nth-child(1)' => 'path' => '@href',
+                                     'text' => 'TEXT';
+    };
+    result 'items';
+  };
+  my $items = $scraper->scrape(scalar $file->slurp);
+
+  # TODO: check installed version?
+  if (!defined wantarray) {
+    if ($items && @$items) {
+      for (reverse @$items) {
+        $_->{text} =~ s/\.zip$//;
+        print " $_->{text}\n";
+      }
+    }
+    else {
+      print "No tagged versions are available.";
+    }
+  }
+  else {
+    return map { $_->{text} =~ s/\.zip$//; $_ } reverse @$items;
+  }
 }
 
 1;

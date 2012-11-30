@@ -20,6 +20,14 @@ sub _run {
   );
 }
 
+sub _list {
+  my @versions = shift->_github_list("/highslide-software/highcharts.com");
+  for (@versions) {
+    next if $_->{text} =~ /highstock/;
+    print " $_->{text}\n";
+  }
+}
+
 1;
 
 __END__

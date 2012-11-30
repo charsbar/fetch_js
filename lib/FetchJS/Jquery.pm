@@ -15,6 +15,19 @@ sub _run {
   $js->move_to($self->_file(js => $basename));
 }
 
+sub _list {
+  my $self = shift;
+  my $file = $self->fetch("http://docs.jquery.com/Downloading_jQuery") or die "Can't get list\n";
+  my $html = $file->slurp;
+  my @links = $html =~ m!<a [^>]*href="http://code\.jquery\.com/jquery-([^"]+)\.js"[^>]*>Uncompressed</a>!g;
+  if (!defined wantarray) {
+    print " $_\n" for reverse @links;
+  }
+  else {
+    return reverse @links;
+  }
+}
+
 1;
 
 __END__

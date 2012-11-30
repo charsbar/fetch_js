@@ -17,6 +17,8 @@ sub _run {
   );
 }
 
+sub _list { shift->_github_list("/pxgrid/js-flipsnap") }
+
 1;
 
 __END__

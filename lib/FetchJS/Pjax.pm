@@ -16,6 +16,8 @@ sub _run {
   });
 }
 
+sub _list { shift->_github_list("/defunkt/jquery-pjax") }
+
 1;
 
 __END__
